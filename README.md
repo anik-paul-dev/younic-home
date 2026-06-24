@@ -1,66 +1,162 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Younic Home - Premium Hostel & Dormitory Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Younic Home is a state-of-the-art, fully responsive hostel management web application built with **Laravel 11**. It provides an end-to-end solution for hostel administrators to manage branches, rooms, residents, and financials, while giving residents a rich, real-time dashboard to manage their stay, pay rent, and request services.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🛠 Built With
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+* **Backend:** Laravel 11.x, PHP 8.2+
+* **Frontend:** Laravel Blade, Tailwind CSS (Custom compiled via Vite), Vanilla JS
+* **Database:** MySQL / SQLite
+* **Real-time Engine:** Node.js, Express, Socket.io (via internal HTTP emit API)
+* **Architecture Design:** MVC Pattern
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🌟 Comprehensive Feature Set
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 🛡️ Admin Panel & Capabilities
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+1. **Admin Dashboard (`/admin/dashboard`)**
+   - **Metrics Overview:** View real-time statistics including monthly revenue, total residents, available seats, and pending requests.
+   - **Recent Activity:** Tracks and displays recent payments made by residents across all branches.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+2. **Branch & Room Management (`/admin/rooms`)**
+   - **Branches:** Create, view, and delete hostel branches/locations.
+   - **Rooms:** Add rooms to specific branches. Define `room_number`, `room_type` (e.g., Single, 2-Seat), `capacity`, and most importantly, the **Daily Rent (৳)**.
+   - **Dynamic Capacity:** Automatically tracks how many seats are occupied vs available.
 
-## Laravel Sponsors
+3. **Resident Management (`/admin/users`)**
+   - **User Roster:** View all registered users.
+   - **Room Assignment Workflow:** Assign a user to a specific branch and room. 
+   - **Booking Rules:** Admins specify the exact `booking_start_date` and `booking_end_date`. The system uses this to calculate exact per-day rent logic.
+   - **Deposit Collection:** Record security deposits during room assignment.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+4. **Request Center (`/admin/requests`)**
+   - **Seat Changes:** Review requests from users who want to change their rooms. Displays exact financial breakdown (spent days, remaining balance, new room cost). Approve or reject with notes.
+   - **Leaves:** Approve or reject dates users request to be away.
+   - **Exits:** Process checkout requests. The system auto-generates a financial settlement (Deposit Refund vs Pending Dues).
 
-### Premium Partners
+5. **Announcements (`/admin/announcements`)**
+   - **Push Notifications:** Broadcast announcements either globally to all residents or privately to specific users. Pushed in real-time via Socket.io.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### 👤 Resident (User) Panel & Capabilities
 
-## Contributing
+1. **Resident Dashboard (`/dashboard`)**
+   - **Profile Management:** Update personal details.
+   - **Current Status:** View assigned branch, room, seat number, and booking dates.
+   - **Live Notifications:** Receive real-time alerts for payment approvals, announcements, and request statuses.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+2. **Rent & Payments (`/rent`)**
+   - **Dynamic Period Rent:** Rent is dynamically calculated strictly based on the booked period (`Total Days × Daily Rent`).
+   - **Wallet Integration:** Displays current wallet balance.
+   - **Payment Gateway Simulation:** Users can pay their dues using simulated gateways (bKash, Nagad, Visa). Payments automatically reflect in the admin dashboard and adjust the user's due status.
 
-## Code of Conduct
+3. **Advanced Seat Change Workflows (`/seat-change`)**
+   - **Interactive Selection:** Users select target branches and view only rooms with available seats.
+   - **Real-time Financial Calculator:** Upon selecting a new room, the system calculates:
+     - Cost of days already spent in the current room.
+     - The remaining monetary value of their current booking.
+     - The exact cost of the new room for the remaining days.
+   - **Inline Resolution:** 
+     - If the new room is more expensive, the user is prompted to pay the *exact difference inline* before submitting the request.
+     - If it is cheaper, the system notes that the surplus will be credited to their wallet upon approval.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+4. **Leave Application (`/leave`)**
+   - Apply for official leaves by selecting start and end dates with a reason.
 
-## Security Vulnerabilities
+5. **Hostel Exit & Settlement (`/exit`)**
+   - Users can file a 30-day notice to leave the hostel.
+   - **Auto-Settlement:** Instantly displays how much of their security deposit will be refunded or how much rent they still owe based on real-time payment data.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## 🧠 Deep Dive: Core Logic Architectures
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Per-Day Rent Mechanics
+Unlike legacy systems that rely on fractional monthly calculations, Younic Home strictly binds costs to the calendar day. 
+- The `rooms` table natively stores `daily_rent`. 
+- `PaymentController` derives total rent via `Carbon::diffInDays()` ensuring maximum billing accuracy regardless of the month's length.
+
+### The Real-time Engine (No Redis Required)
+Younic Home avoids heavy Redis dependencies by utilizing a lightweight internal HTTP proxy for WebSockets:
+- **`server.js`**: Runs an Express app on port `6001` that exposes a POST `/emit` endpoint.
+- **Laravel Implementation**: When a notification is generated (e.g., in `AdminController` or `RequestController`), Laravel sends an internal HTTP POST request containing the event payload to the Express server.
+- **Socket.io**: The Express server catches this payload and immediately broadcasts it to the connected client browsers, ensuring instantaneous UI updates.
+
+---
+
+## 🗄️ Database Schema & Models
+
+| Table / Model | Core Purpose | Key Attributes |
+|---|---|---|
+| `users` | Handles auth and resident state. | `role`, `room_id`, `balance`, `deposit`, `booking_start_date`, `booking_end_date` |
+| `branches` | Physical hostel locations. | `name`, `address` |
+| `rooms` | Specific rooms in a branch. | `branch_id`, `room_number`, `capacity`, `daily_rent` |
+| `payments` | Centralized financial ledger. | `amount`, `payment_method`, `payment_type`, `status`, `transaction_id` |
+| `seat_change_requests`| Complex state table for moves. | `spent_days`, `remaining_balance`, `new_room_cost`, `additional_needed`, `additional_paid` |
+| `leave_applications` | Leave tracking. | `start_date`, `end_date`, `status` |
+| `exit_requests` | Checkout financial snapshots. | `notice_date`, `exit_date`, `total_due`, `deposit_refund` |
+| `notifications` | Alert system. | `title`, `message`, `type`, `is_read` |
+
+---
+
+## ⚙️ Installation & Local Setup
+
+### Prerequisites
+- PHP 8.2+
+- Composer 2.x
+- Node.js & npm
+- MySQL / MariaDB (or SQLite)
+
+### Step-by-Step Guide
+
+**1. Clone & Install Dependencies**
+```bash
+git clone https://github.com/anik-paul-dev/younic-home
+cd younic-home
+composer install
+npm install
+```
+
+**2. Environment Configuration**
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+Configure your database credentials inside the `.env` file (`DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`).
+
+**3. Database Migrations & Seeding**
+Run the migration with the seeder to populate the database with default Admin credentials, Branches, Rooms with accurate `daily_rent` values, and test users.
+```bash
+php artisan migrate:fresh --seed
+```
+*Note: Default Admin Login: `admin@younic.com` / `password`*
+*Note: Default User Login: `test@example.com` / `password`*
+
+**4. Build Frontend Assets**
+Compile the Tailwind CSS and JavaScript assets:
+```bash
+npm run build
+```
+
+**5. Start the Application**
+Because Younic Home utilizes a decoupled real-time engine, you must run three separate processes during local development:
+
+*Terminal 1 (Laravel PHP Server):*
+```bash
+php artisan serve
+```
+
+*Terminal 2 (Vite Hot-Reloading for Frontend):*
+```bash
+npm run dev
+```
+
+*Terminal 3 (Real-time Socket.io Node Server):*
+```bash
+node server.js
+```
+
+Once all servers are running, navigate to `http://localhost:8000` to access Younic Home.
